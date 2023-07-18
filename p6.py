@@ -1,65 +1,69 @@
 import heapq
 
-def dijkstra(graph,start):
-    distances={node: float('inf') for node in graph}
-    distances[start]=0
-    heap=[(0,start)]
-
-
+def dijkstra(graph, start):
+    distances = {node: float('inf') for node in graph}
+    distances[start] = 0
+    heap = [(0, start)]
 
     while heap:
-        currentdist,currentnode,=heapq.heappop(heap)
-        if currentdist>distances[currentnode]:
+        current_dist, current_node = heapq.heappop(heap)
+        if current_dist > distances[current_node]:
             continue
-        for neighbor,weight in graph[currentnode].items():
-            distance=currentdist+weight
-            if distance<distances[neighbor]:
-                distances[neighbor]=distance
-                heapq.heappush(heap,(distance,neighbor))
+        for neighbor, weight in graph[current_node].items():
+            distance = current_dist + weight
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(heap, (distance, neighbor))
 
     return distances
 
-def findoptimalroute(graph,start,destination):
-    distances=dijkstra(graph,start)
-    if distances[destination]==float('inf'):
+def find_optimal_route(graph, start, destination):
+    distances = dijkstra(graph, start)
+    if distances[destination] == float('inf'):
         return None
-    route=[]
-    node=destination
+    route = []
+    node = destination
 
-    while node!=start:
+    while node != start:
         route.append(node)
-        neighbors=graph[node]
-        mindistance=float('inf')
-        nextnode=None
-        for neighbor,weight in neighbors.items():
-            if distances[neighbor]+weight==distances[node] and distances[neighbor]<mindistance:
-                mindistance=distances[neighbor]
-                nextnode=neighbor
-
-        if nextnode is None or nextnode in route:
+        neighbors = graph[node]
+        min_distance = float('inf')
+        next_node = None
+        for neighbor, weight in neighbors.items():
+            if distances[neighbor] + weight == distances[node] and distances[neighbor] < min_distance:
+                min_distance = distances[neighbor]
+                next_node = neighbor
+        if next_node is None or next_node in route:
             return None
-        node=nextnode
+        node = next_node
 
+    route.append(start)
+    route.reverse()
+    return route
 
-     route.append(start)
-     route.reverse()
-     return route        
+# Get user input for the graph
+graph = {}
+num_edges = int(input("Enter the number of edges in the graph: "))
+print("Enter the edges in the format 'node1 node2 weight':")
+for _ in range(num_edges):
+    edge = input().split()
+    node1, node2, weight = edge[0], edge[1], int(edge[2])
+    if node1 not in graph:
+        graph[node1] = {}
+    if node2 not in graph:
+        graph[node2] = {}
+    graph[node1][node2] = weight
+    graph[node2][node1] = weight
 
+# Get user input for the start and destination nodes
+start_node = input("Enter the start node: ")
+destination_node = input("Enter the destination node: ")
 
-graph={
-    'A':{'B':3,'C':99,'D':7,'E':99},
-    'B':{'A':3,'C':99,'D':7,'E':99},
-    'C':{'A':99,'C':99,'D':7,'E':99},
-    'D':{'A':7,'C':99,'D':7,'E':99},
-    'E':{'A':3,'C':99,'D':7,'E':99},
-}
+# Find the optimal route
+route = find_optimal_route(graph, start_node, destination_node)
 
-startlocation='A'
-destinationlocation='E'
-
-optimalroute=findoptimalroute(graph,startlocation,destinationlocation)
-
-if optimalroute is None:
-    print("No valid route exists from start to destination.")
+# Print the result
+if route is None:
+    print("No route found.")
 else:
-    print("Optimal route:",'->'.join(optimalroute))    
+    print("Optimal route:", route)
