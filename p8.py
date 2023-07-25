@@ -21,7 +21,7 @@ def calculate_optimal_cost(drill_order,distances):
 
 if __name__ == "__main__":
     while True:
-        num_nodes = int(input("Enter th enumber of drill holes(nodes): "))
+        num_nodes = int(input("Enter th number of drill holes(nodes): "))
         distances = get_distances(num_nodes)
         optimal_order = tsp_optimal_drilling(distances)
         optimal_cost = calculate_optimal_cost(optimal_order,distances)
