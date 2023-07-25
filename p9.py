@@ -50,5 +50,5 @@ def solve_n_queen(N):
                 print()
             print()
 
-N=4
+N=int(input("Enter no of queens"))
 solve_n_queen(N)
